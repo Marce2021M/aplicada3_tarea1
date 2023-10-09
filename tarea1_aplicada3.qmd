@@ -23,7 +23,7 @@ data2 <- iris
 
 ```
 
-```{r}
+```{r, error=TRUE}
 
 # Extraer imágenes y etiquetas de entrenamiento
 train_images <- data1$train$x
@@ -73,7 +73,7 @@ qda_fit |>
   pluck("fit")
 ```
 
-```{r}
+```{r, error=TRUE}
 qda_spec <- discrim_quad() |>
   set_mode("classification") |>
   set_engine("MASS")
@@ -98,7 +98,7 @@ qda_fit |>
   pluck("fit")
 ```
 
-```{r}
+```{r, error=TRUE}
 
 # Sample data
 set.seed(123)
@@ -160,7 +160,7 @@ agglomerative_clustering <- function(dist_matrix, linkage = "single") {
 ```
 
 
-```{r}
+```{r, error=TRUE}
 dist_matrix <- as.matrix(dist(data))
 
 # Initialize clusters
@@ -223,7 +223,7 @@ plot(hc, main="Single-linkage Hierarchical Clustering", sub="", xlab="", ylab="H
 
 ```
 
-```{r}
+```{r, error=TRUE}
 # 1. Correct the merge history in hc_history
 
 # Initialize clusters
@@ -280,7 +280,9 @@ class(hc) <- "hclust"
 
 ```
 
-```{r}
+```{r, error=TRUE}
+
+dist_matrix <- dist(data)
 # Single-linkage
 single_linkage <- hclust(dist_matrix, method="single")
 plot(single_linkage, main="Single-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
