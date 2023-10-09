@@ -1,0 +1,94 @@
+---
+title: "Tarea 1"
+lang: es
+author: "Marcelino"
+date: today
+format:
+  html:
+    page-layout: full
+    embed-resources: true
+---
+
+```{r}
+library(tidymodels)
+library(discrim)
+
+library(corrr)
+library(paletteer)
+library(keras)
+data1 <- dataset_mnist()
+data2 <- iris
+
+
+```
+
+```{r}
+
+# modelo LDA
+
+lda_spec <- discrim_linear() |>
+  set_mode("classification") |>
+  set_engine("MASS")
+
+lda_fit <- lda_spec |>
+  fit(Species ~ ., data = data1) #modificar
+
+augment(lda_fit, new_data = data1) |>
+  conf_mat(truth = Species, estimate = .pred_class) |>
+  autoplot(type = "heatmap")
+
+augment(lda_fit, new_data = data1) |>
+  accuracy(truth = Species, estimate = .pred_class)
+
+augment(lda_fit, new_data = data1) |>
+  recall(truth = Species, estimate = .pred_class)
+
+augment(lda_fit, new_data = data1) |>
+  precision(truth = Species, estimate = .pred_class)
+
+qda_fit |>
+  pluck("fit")
+```
+
+```{r}
+qda_spec <- discrim_quad() |>
+  set_mode("classification") |>
+  set_engine("MASS")
+
+qda_fit <- qda_spec |>
+  fit(Species ~ ., data = data2) #modificar
+
+augment(qda_fit, new_data = data2) |>
+  conf_mat(truth = Species, estimate = .pred_class) |>
+  autoplot(type = "heatmap")
+
+augment(qda_fit, new_data = data2) |>
+  accuracy(truth = Species, estimate = .pred_class)
+
+augment(qda_fit, new_data = data2) |>
+  recall(truth = Species, estimate = .pred_class)
+
+augment(qda_fit, new_data = data2) |>
+  precision(truth = Species, estimate = .pred_class)
+
+qda_fit |>
+  pluck("fit")
+```
+
+```{r}
+# Create the dataframe
+cereal_data <- data.frame(
+  Cereal = c("Life", "Grape Nuts", "Super Sugar Crisp", "Special K", "Rice Krispies", "Raisin Bran", 
+             "Product 19", "Wheaties", "Total", "Puffed Rice", "Sugar Corn Pops", "Sugar Smacks"),
+  Protein_gm = c(6, 3, 2, 6, 2, 3, 2, 3, 3, 1, 1, 2),
+  Carbohydrates_gm = c(19, 23, 26, 21, 25, 28, 24, 23, 23, 13, 26, 25),
+  Fat_gm = c(1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0),
+  Calories_per_oz = c(110, 100, 110, 110, 110, 120, 110, 110, 110, 50, 110, 110),
+  Vitamin_A_pct_daily_allowance = c(0, 25, 25, 25, 25, 25, 100, 25, 100, 0, 25, 25)
+)
+
+# Print the dataframe
+cereal_data
+
+```
+
