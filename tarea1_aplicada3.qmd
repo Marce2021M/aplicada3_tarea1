@@ -17,7 +17,6 @@ library(discrim)
 
 library(corrr)
 library(paletteer)
-library(keras)
 
 library(dslabs)
 library(tidyr)
@@ -65,8 +64,10 @@ lda_spec <- discrim_linear() |>
   set_mode("classification") |>
   set_engine("MASS")
 
+train$label <- as.factor(train$label)
+
 lda_fit <- lda_spec |>
-  fit(label ~ ., data = df_combined) #modificar
+  fit(label ~ ., data = train) #modificar
 
 augment(lda_fit, new_data = df_combined) |>
   conf_mat(truth = Species, estimate = .pred_class) |>
