@@ -86,6 +86,11 @@ qda_fit |>
   pluck("fit")
 ```
 
+```{r}
+# cv
+
+```
+
 ```{r, error=TRUE}
 qda_spec <- discrim_quad() |>
   set_mode("classification") |>
