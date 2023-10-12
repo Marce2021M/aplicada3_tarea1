@@ -1,5 +1,5 @@
 ---
-title: "Tarea 1"
+title: "Estadística Aplicada 3 - Tarea 1"
 lang: es
 author: "Marcelino"
 date: today
@@ -10,7 +10,7 @@ format:
 ---
 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 #Cargamos paquetes
 library(tidymodels)
 library(discrim)
@@ -23,40 +23,39 @@ library(tidyr)
 
 # Cargamos bases de datos
 data2 <- iris
-
-
 ```
 
-```{r, error=TRUE}
+# 1.- Derive la probabilidad de mala clasificación para LDA
+
+# 2.- Implementar LDA sobre la base de datos ```MNIST``` y usar los dígitos 1 y 3
+
+```{r, error=TRUE, eval=FALSE}
 #Cargamos bases de datos
 mnist_data <- read_mnist()
 
+#Preparamos datos
 tri <- train_images <- mnist_data$train$images
 train_labels<-mnist_data$train$labels
 tei <- test_images <- mnist_data$test$images
 test_labels <- mnist_data$test$labels
 
+## Entrenamiento
 tr_ind <- (train_labels == 1) | (train_labels==3)
 train_labels <- train_labels[tr_ind]
 tri <- tri[tr_ind,]
+tri2 <- array(tri, dim=c(dim(tri)[1],28,28))
+tri_promr <- rowMeans(tri2, dims = 2)
 
+#Testeo
 te_ind <- (test_labels == 1) | (test_labels==3)
 test_labels <- test_labels[te_ind]
 tei <- tei[te_ind,]
+tei2 <- array(tei, dim=c(dim(tei)[1],28,28))
+tei_promr <- rowMeans(tei2, dims = 2)
 
-
-tei[1,] # this is how the image looks as a matrix representation
-
-train <- data.frame(label = (train_labels == 1),tri)
-model <- glm(label~.,family=binomial(link='logit'),data=train)
-
-
-test <- data.frame(label = (test_labels == 1),tei)
-
-prob <- model %>% predict(test, type = "response")
-pred <- ifelse(prob > 0.5, 1, 3)
-
-sum(pred == test_labels) / length(test_labels)
+#Hacemos dataframe para entrenar
+train <- data.frame(label = (train_labels == 1),tri_promr) 
+train$label <- as.factor(train$label) #agregamos
 
 # modelo LDA
 
@@ -69,24 +68,40 @@ train$label <- as.factor(train$label)
 lda_fit <- lda_spec |>
   fit(label ~ ., data = train) #modificar
 
-augment(lda_fit, new_data = df_combined) |>
+
+
+#model <- lda(label~.,data=train)
+
+#Hacemos dataframe para testear
+
+test <- data.frame(label = (test_labels == 1),tei_promr)
+
+prob <- predict(model, test, method = "debiased") #, type = "response")
+pred <- ifelse(prob$posterior[,2] > 0.5, 1, 3)
+
+sum(pred == test_labels) / length(test_labels) #precisión de predictor
+
+test$label <- as.factor(test$label) #agregamos
+
+augment(lda_fit, new_data = test) |>
   conf_mat(truth = Species, estimate = .pred_class) |>
   autoplot(type = "heatmap")
 
-augment(lda_fit, new_data = df_combined) |>
+augment(lda_fit, new_data = test) |>
   accuracy(truth = Species, estimate = .pred_class)
 
-augment(lda_fit, new_data = df_combined) |>
+augment(lda_fit, new_data = test) |>
   recall(truth = Species, estimate = .pred_class)
 
-augment(lda_fit, new_data = df_combined) |>
+augment(lda_fit, new_data = test) |>
   precision(truth = Species, estimate = .pred_class)
 
 qda_fit |>
   pluck("fit")
+
 ```
 
-```{r}
+```{r, eval=FALSE}
 # cv
 
 #data
@@ -130,11 +145,11 @@ lr_fit_cv <- lr_workflow |>
   fit_resamples(train_folds, control = options)
 })
 
-collect_metrics(lr_fit_cv)
-
-
 
 ```
+
+# 3.- Implementar QDA sobre los datos de ```iris``` (raw data)
+
 
 ```{r, error=TRUE}
 qda_spec <- discrim_quad() |>
@@ -161,6 +176,38 @@ qda_fit |>
   pluck("fit")
 ```
 
+# 5.- Problema de clasificación
+
+A reseracher wants to determine a prcedure for disminating between two multivariate populations. The researcher has enough datavailable to estimate the density functions $f_{1}(x)$ and $f_{2}(x)$ associated with populatios $\pi_{1}$ and $\pi_{2}$ respectively. Let $c(2|1)=50$ (cost of assigning item as $\pi_{2}$ given that $\pi_{1} is true$) and $c(2|1)=100$
+
+In addition, it is knoe that about 20% of all possible items (for which the measurements $x$ can be recorded) belong to $\pi_{2}$ 
+
+(a) Give the minimum ECM rule (in general form) for assigning a new item to one of the two populations.
+
+
+
+(b) Measurements recorded on a new item yield the densitiy values $f_{1}(x)=.3$ and $f_{2}(x)=.5$. Given the preceding information, assign this item to populatio $\pi_{1}$ or $\pi_{2}$
+
+
+# 6.- Problema de QDA
+
+Suppose $x$ comes from one of two populations:
+
+$$\pi_{1}\sim N(\mu_{1}, \Sigma_{1})$$
+
+$$\pi_{2}\sim N(\mu_{2}, \Sigma_{2})$$
+
+If the respective density functions are denoted by f_{1}(x) and f_{2}(x), find the expression for the quadratic disccriminator
+
+$$Q=\ln\left(\frac{f_{1}(x)}{f_{2}(x)}\right)$$
+
+If $\Sigma_{1}=\Sigma_{2}=\Sigma$ for instance, verify that $Q$ becomes 
+
+$$(\mu_{1}-\mu_{2})'\Sigma^{-1}x-\frac{1}{2}(\mu_{1}-\mu_{2})'\Sigma^{-1}(\mu_{1}+\mu_{2})$$
+
+
+# 7.- Write a coputer program to implement single-linkage, average-linkage, and complete-linkage agglomerative hierarchical clustering. Try it out on a data set of your choice.
+
 ```{r, error=TRUE}
 
 # Sample data
@@ -171,199 +218,44 @@ colnames(data) <- c("X", "Y")
 # Visualize the data
 plot(data, pch=19, col="blue", xlab="X", ylab="Y", main="Sample Data Points")
 
-# Compute the distance matrix
 dist_matrix <- dist(data)
 
-# Agglomerative clustering from scratch
-agglomerative_clustering <- function(dist_matrix, linkage = "single") {
-  n <- nrow(dist_matrix)
-  clusters <- list()
-  for (i in 1:n) {
-    clusters[[i]] <- c(i)
+clusterFunc <- function(dist_matrix,method ="single" ){
+  if(method="single"){
+    # Single-linkage
+    single_linkage <- hclust(dist_matrix, method="single")
+    plot(single_linkage, main="Single-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
+  } else if(method="average"){
+    # Average-linkage
+    average_linkage <- hclust(dist_matrix, method="average")
+    plot(average_linkage, main="Average-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
+  } else{
+    # Complete-linkage
+    complete_linkage <- hclust(dist_matrix, method="complete")
+    plot(complete_linkage, main="Complete-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
   }
-
-  while (length(clusters) > 1) {
-    min_dist <- Inf
-    combine <- c(0, 0)
-
-    for (i in 1:(length(clusters) - 1)) {
-      for (j in (i + 1):length(clusters)) {
-        cluster_i <- clusters[[i]]
-        cluster_j <- clusters[[j]]
-
-        if (linkage == "single") {
-          current_dist <- min(dist_matrix[cluster_i, cluster_j])
-        } else if (linkage == "complete") {
-          current_dist <- max(dist_matrix[cluster_i, cluster_j])
-        } else if (linkage == "average") {
-          current_dist <- mean(dist_matrix[cluster_i, cluster_j])
-        }
-
-        if (current_dist < min_dist) {
-          min_dist <- current_dist
-          combine <- c(i, j)
-        }
-      }
-    }
-
-    new_cluster <- c(clusters[[combine[1]]], clusters[[combine[2]]])
-    clusters <- clusters[-combine]
-    clusters[[length(clusters) + 1]] <- new_cluster
-  }
-  
-  return(clusters)
 }
 
-
-
-
-
-
+clusterFunc(dist_matrix,method ="single" )
+clusterFunc(dist_matrix,method ="average" )
+clusterFunc(dist_matrix,method ="complete" )
 
 ```
 
+# 8.- Implemente SL, AL y CL sobre la base de datos ```iris``` (raw data)
 
-```{r, error=TRUE}
-dist_matrix <- as.matrix(dist(data))
-
-# Initialize clusters
-clusters <- list()
-for (i in 1:nrow(dist_matrix)) {
-    clusters[[i]] <- c(i)
-}
-
-# Single-linkage function
-single_linkage_distance <- function(cluster1, cluster2, dist_matrix) {
-    min_distance <- Inf
-    for (i in cluster1) {
-        for (j in cluster2) {
-            if (dist_matrix[i,j] < min_distance) {
-                min_distance <- dist_matrix[i,j]
-            }
-        }
-    }
-    return(min_distance)
-}
-
-# Modify the initialization of hc_history
-hc_history <- data.frame(merge1 = integer(nrow(dist_matrix) - 1),
-                         merge2 = integer(nrow(dist_matrix) - 1),
-                         height = double(nrow(dist_matrix) - 1))
-
-# Modify the part where we record the merge history
-for (step in 1:(nrow(dist_matrix) - 1)) {
-    # ... [rest of the loop code remains the same]
-    
-    # Record the merge history
-    hc_history[step, "merge1"] <- closest_clusters[1]
-    hc_history[step, "merge2"] <- closest_clusters[2]
-    hc_history[step, "height"] <- min_distance
-}
-
-
-# Plot the dendrogram
-# Convert hc_history to an hclust object
-hc <- list()
-
-# The merge matrix for hclust is slightly different. It represents which clusters/items are merged at each step. 
-# Negative values indicate original data points (leaf nodes), while positive values indicate internal nodes.
-# Convert our merge history to this format:
-n <- nrow(dist_matrix)
-hc$merge <- matrix(0, n-1, 2)
-m <- max(hc_history$merge1, hc_history$merge2)
-hc$merge[, 1] <- ifelse(hc_history$merge1 > n, hc_history$merge1 - n + m, -hc_history$merge1)
-hc$merge[, 2] <- ifelse(hc_history$merge2 > n, hc_history$merge2 - n + m, -hc_history$merge2)
-
-hc$height <- hc_history$height
-hc$order <- order.dendrogram(as.dendrogram(hc))
-hc$labels <- 1:n
-hc$method <- "single"
-class(hc) <- "hclust"
-
-# Now plot
-plot(hc, main="Single-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
-
-
-```
-
-```{r, error=TRUE}
-# 1. Correct the merge history in hc_history
-
-# Initialize clusters
-clusters <- lapply(1:nrow(dist_matrix), function(x) c(x))
-hc_history <- data.frame(merge1 = integer(nrow(dist_matrix) - 1),
-                         merge2 = integer(nrow(dist_matrix) - 1),
-                         height = double(nrow(dist_matrix) - 1))
-
-for (step in 1:(nrow(dist_matrix) - 1)) {
-    # Find the two closest clusters
-    min_distance <- Inf
-    for (i in 1:(length(clusters)-1)) {
-        for (j in (i+1):length(clusters)) {
-            current_distance <- single_linkage_distance(clusters[[i]], clusters[[j]], dist_matrix)
-            if (current_distance < min_distance) {
-                min_distance <- current_distance
-                closest_clusters <- c(i,j)
-            }
-        }
-    }
-    
-    # Merge clusters
-    new_cluster <- c(clusters[[closest_clusters[1]]], clusters[[closest_clusters[2]]])
-    clusters[[closest_clusters[1]]] <- new_cluster
-    clusters <- clusters[-closest_clusters[2]]
-    
-    # Record the merge history
-    hc_history[step, "merge1"] <- closest_clusters[1]
-    hc_history[step, "merge2"] <- closest_clusters[2]
-    hc_history[step, "height"] <- min_distance
-}
-
-# 2. Construct the dendrogram from hc_history
-
-# The merge matrix for hclust represents which clusters/items are merged at each step. 
-merge_matrix <- matrix(0, n-1, 2)
-for (i in 1:(n-1)) {
-    # if merge value is larger than n, then it represents a merged cluster, 
-    # otherwise it represents an original item
-    merge_matrix[i, 1] <- ifelse(hc_history$merge1[i] > n, -(hc_history$merge1[i] - n), hc_history$merge1[i])
-    merge_matrix[i, 2] <- ifelse(hc_history$merge2[i] > n, -(hc_history$merge2[i] - n), hc_history$merge2[i])
-}
-
-hc <- list()
-hc$merge <- merge_matrix
-hc$height <- hc_history$height
-hc$order <- NULL
-hc$labels <- 1:n
-hc$method <- "single"
-class(hc) <- "hclust"
-
-
-
-
-```
-
-```{r, error=TRUE}
-
-dist_matrix <- dist(data)
-# Single-linkage
-single_linkage <- hclust(dist_matrix, method="single")
-plot(single_linkage, main="Single-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
-
-# Average-linkage
-average_linkage <- hclust(dist_matrix, method="average")
-plot(average_linkage, main="Average-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
-
-# Complete-linkage
-complete_linkage <- hclust(dist_matrix, method="complete")
-plot(complete_linkage, main="Complete-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
-
-```
-
-
-# Ejercicio 12.13
 ```{r}
-# Create the dataframe
+
+
+```
+
+
+
+# 9.- Problem 12.13
+
+The following table lists measurements on 5 nutritional variables for 12 breakfast cereals.
+
+```{r, message=FALSE, warning=FALSE}
 cereal_data <- data.frame(
   Cereal = c("Life", "Grape Nuts", "Super Sugar Crisp", "Special K", "Rice Krispies", "Raisin Bran", 
              "Product 19", "Wheaties", "Total", "Puffed Rice", "Sugar Corn Pops", "Sugar Smacks"),
@@ -374,57 +266,37 @@ cereal_data <- data.frame(
   Vitamin_A_pct_daily_allowance = c(0, 25, 25, 25, 25, 25, 100, 25, 100, 0, 25, 25)
 )
 
-# Print the dataframe
 cereal_data
+```
 
+(a) Using tha data in the table, calculate the euclidean distances between each pair of cereal brands.
+
+```{r}
 # Compute the distance matrix
 dist_matrix <- dist(cereal_data[1:12,2:6])
 
-# Single-linkage
-single_linkage <- hclust(dist_matrix, method="single")
-plot(single_linkage, main="Single-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
+dist_matrix
+```
 
-#Complete-linkage
+(b) Treating the distances calculated in (a) as measures of dissimilarity, use single-linkage, complete-linkage, and average-linkage clustering to cluster the cereal brands. Construct a dendrogram for each method.
 
-complete_linkage <- hclust(dist_matrix, method="complete")
-plot(complete_linkage, main="Complete-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
+```{r}
+clusterFunc(dist_matrix,method ="single" )
+clusterFunc(dist_matrix,method ="average" )
+clusterFunc(dist_matrix,method ="complete" )
 ```
 
 
-# Ejercicio 12.14
+# 10.- Input the data in the previous table into k-means clustering program. Use the program to cluster the cereal brands into 2, 3, and 4 clusters. Compare the results with those obtained in the previous problem.
+
+## Utilizamos K=2
 ```{r}
-# Create the dataframe
-cereal_data <- data.frame(
-  Cereal = c("Life", "Grape Nuts", "Super Sugar Crisp", "Special K", "Rice Krispies", "Raisin Bran", 
-             "Product 19", "Wheaties", "Total", "Puffed Rice", "Sugar Corn Pops", "Sugar Smacks"),
-  Protein_gm = c(6, 3, 2, 6, 2, 3, 2, 3, 3, 1, 1, 2),
-  Carbohydrates_gm = c(19, 23, 26, 21, 25, 28, 24, 23, 23, 13, 26, 25),
-  Fat_gm = c(1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0),
-  Calories_per_oz = c(110, 100, 110, 110, 110, 120, 110, 110, 110, 50, 110, 110),
-  Vitamin_A_pct_daily_allowance = c(0, 25, 25, 25, 25, 25, 100, 25, 100, 0, 25, 25)
-)
-
-# Print the dataframe
-cereal_data
-
 # Exclude the Cereal column
 clustering_data <- cereal_data[,-1]
 
 # Choose the optimal number of clusters (for demonstration, let's say 3)
 set.seed(123)  # Set seed for reproducibility
-clusters <- kmeans(clustering_data, centers=2, nstart=25)
-
-# Add cluster results to the original data
-cereal_data$cluster <- as.factor(clusters$cluster)
-
-# Print the dataframe with clusters
-print(cereal_data)
-
-```
-
-
-```{r}
-clusters <- kmeans(clustering_data, centers=3, nstart=25)
+clusters <- kmeans(clustering_data, centers=2)
 
 # Add cluster results to the original data
 cereal_data$cluster <- as.factor(clusters$cluster)
@@ -433,8 +305,20 @@ cereal_data$cluster <- as.factor(clusters$cluster)
 print(cereal_data)
 ```
 
+## Utilizamos K=3
 ```{r}
-clusters <- kmeans(clustering_data, centers=4, nstart=25)
+clusters <- kmeans(clustering_data, centers=3)
+
+# Add cluster results to the original data
+cereal_data$cluster <- as.factor(clusters$cluster)
+
+# Print the dataframe with clusters
+print(cereal_data)
+```
+
+## Utilizamos K=4
+```{r}
+clusters <- kmeans(clustering_data, centers=4)
 
 # Add cluster results to the original data
 cereal_data$cluster <- as.factor(clusters$cluster)
