@@ -2667,8 +2667,17 @@ vertical-align: -.125em;
 <p><span class="math display">\[P(\mathbf{x}\in R_{2}|\mathbf{x}\in \Pi_{1})\pi_{1} = P(L(\mathbf{x})&lt;0|\mathbf{x}\in\Pi_{1})\]</span></p>
 <p>donde aquí consideramos que <span class="math inline">\(L(\mathbf{x})\)</span> es la función discriminante de LDA, y <span class="math inline">\(R_{2}\)</span> es la región de decisión para la clase 2:</p>
 <p><span class="math display">\[L(\mathbf{x})=\ln\left(\frac{f_{1}(x)\pi_{1}}{f_{2}(x)\pi_{2}}\right)= \ln\left(\frac{f_{1}(x)}{f_{2}(x)}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)\]</span></p>
-<p>Con lo cual desarrollando obtenemos la siguiente expresión:</p>
+<p>Con lo cual desarrollando (usando propiedades de logaritmo) obtenemos la siguiente expresión:</p>
+<p><span class="math display">\[L(\mathbf{x})=\ln(f_{1}(x))-\ln(f_{2}(x))+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=\]</span></p>
 <p><span class="math display">\[\ln(f_{1}(x))-\ln(f_{2}(x))+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=\]</span></p>
+<p><span class="math display">\[\ln \left(\frac{1}{\sqrt{(2\pi)^k |\Sigma|}} \exp\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})\right)
+\right)-\]</span></p>
+<p><span class="math display">\[\ln \left( \frac{1}{\sqrt{(2\pi)^k |\Sigma|}} \exp\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)
+\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=\]</span></p>
+<p><span class="math display">\[\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})\right)
+-\]</span></p>
+<p><span class="math display">\[\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)
++ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=\]</span></p>
 </section>
 <section id="implementar-lda-sobre-la-base-de-datos-mnist-y-usar-los-dígitos-1-y-3" class="level1">
 <h1>2.- Implementar LDA sobre la base de datos <code>MNIST</code> y usar los dígitos 1 y 3</h1>

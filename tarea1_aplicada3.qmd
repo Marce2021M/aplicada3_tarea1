@@ -39,9 +39,25 @@ donde aquí consideramos que $L(\mathbf{x})$ es la función discriminante de LDA
 
 $$L(\mathbf{x})=\ln\left(\frac{f_{1}(x)\pi_{1}}{f_{2}(x)\pi_{2}}\right)= \ln\left(\frac{f_{1}(x)}{f_{2}(x)}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)$$
 
-Con lo cual desarrollando obtenemos la siguiente expresión:
+Con lo cual desarrollando (usando propiedades de logaritmo) obtenemos la siguiente expresión:
+
+$$L(\mathbf{x})=\ln(f_{1}(x))-\ln(f_{2}(x))+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
 
 $$\ln(f_{1}(x))-\ln(f_{2}(x))+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
+
+$$\ln \left(\frac{1}{\sqrt{(2\pi)^k |\Sigma|}} \exp\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})\right)
+\right)-$$
+
+$$\ln \left( \frac{1}{\sqrt{(2\pi)^k |\Sigma|}} \exp\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)
+\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
+
+$$\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})\right)
+-$$
+
+$$\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)
++ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
+
+
 
 # 2.- Implementar LDA sobre la base de datos ```MNIST``` y usar los dígitos 1 y 3
 
