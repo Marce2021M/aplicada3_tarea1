@@ -11,41 +11,53 @@ format:
 
 
 ```{r}
+#Cargamos paquetes
 library(tidymodels)
 library(discrim)
 
 library(corrr)
 library(paletteer)
 library(keras)
-data1 <- dataset_mnist()
+
+library(dslabs)
+library(tidyr)
+
+# Cargamos bases de datos
 data2 <- iris
 
 
 ```
 
 ```{r, error=TRUE}
+#Cargamos bases de datos
+mnist_data <- read_mnist()
 
-# Extraer imágenes y etiquetas de entrenamiento
-train_images <- data1$train$x
-train_labels <- data1$train$y
+tri <- train_images <- mnist_data$train$images
+train_labels<-mnist_data$train$labels
+tei <- test_images <- mnist_data$test$images
+test_labels <- mnist_data$test$labels
 
-# Filtrar sólo los dígitos 1 y 3
-train_indices <- which(train_labels == 1 | train_labels == 3)
-train_images_filtered <- train_images[train_indices,,]
-train_labels_filtered <- train_labels[train_indices]
+tr_ind <- (train_labels == 1) | (train_labels==3)
+train_labels <- train_labels[tr_ind]
+tri <- tri[tr_ind,]
 
-# 1. Aplanar las imágenes
-train_images_flattened <- array_reshape(train_images_filtered, c(nrow(train_images_filtered), 28*28))
+te_ind <- (test_labels == 1) | (test_labels==3)
+test_labels <- test_labels[te_ind]
+tei <- tei[te_ind,]
 
-# 2. Convertir a data.frame
-df_images <- as.data.frame(train_images_flattened)
-df_labels <- data.frame(label = train_labels_filtered)
 
-# 3. Combinar ambos data.frames
-df_combined <- cbind(df_labels, df_images)
+tei[1,] # this is how the image looks as a matrix representation
 
-# Convertir la columna 'label' a un factor
-df_combined$label <- as.factor(df_combined$label)
+train <- data.frame(label = (train_labels == 1),tri)
+model <- glm(label~.,family=binomial(link='logit'),data=train)
+
+
+test <- data.frame(label = (test_labels == 1),tei)
+
+prob <- model %>% predict(test, type = "response")
+pred <- ifelse(prob > 0.5, 1, 3)
+
+sum(pred == test_labels) / length(test_labels)
 
 # modelo LDA
 
