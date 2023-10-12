@@ -27,6 +27,22 @@ data2 <- iris
 
 # 1.- Derive la probabilidad de mala clasificación para LDA
 
+La probabilidad de mala clasificación binaria en LDA  (guassiano) es
+
+$$P(\Delta)=P(\mathbf{x}\in R_{2}|\mathbf{x}\in \Pi_{1})\pi_{1}+P(\mathbf{x}\in R_{1}|\mathbf{x}\in \Pi_{2})\pi_{2}$$
+
+donde tenemos que
+
+$$P(\mathbf{x}\in R_{2}|\mathbf{x}\in \Pi_{1})\pi_{1} = P(L(\mathbf{x})<0|\mathbf{x}\in\Pi_{1})$$
+
+donde aquí consideramos que $L(\mathbf{x})$ es la función discriminante de LDA, y $R_{2}$ es la región de decisión para la clase 2:
+
+$$L(\mathbf{x})=\ln\left(\frac{f_{1}(x)\pi_{1}}{f_{2}(x)\pi_{2}}\right)= \ln\left(\frac{f_{1}(x)}{f_{2}(x)}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)$$
+
+Con lo cual desarrollando obtenemos la siguiente expresión:
+
+$$\ln(f_{1}(x))-\ln(f_{2}(x))+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
+
 # 2.- Implementar LDA sobre la base de datos ```MNIST``` y usar los dígitos 1 y 3
 
 ```{r, error=TRUE, eval=FALSE}
@@ -221,11 +237,11 @@ plot(data, pch=19, col="blue", xlab="X", ylab="Y", main="Sample Data Points")
 dist_matrix <- dist(data)
 
 clusterFunc <- function(dist_matrix,method ="single" ){
-  if(method="single"){
+  if(method=="single"){
     # Single-linkage
     single_linkage <- hclust(dist_matrix, method="single")
     plot(single_linkage, main="Single-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
-  } else if(method="average"){
+  } else if(method=="average"){
     # Average-linkage
     average_linkage <- hclust(dist_matrix, method="average")
     plot(average_linkage, main="Average-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
