@@ -45,17 +45,13 @@ $$L(\mathbf{x})=\ln(f_{1}(x))-\ln(f_{2}(x))+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\ri
 
 $$\ln(f_{1}(x))-\ln(f_{2}(x))+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
 
-$$\ln \left(\frac{1}{\sqrt{(2\pi)^k |\Sigma|}} \exp\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})\right)
-\right)-$$
+$$\ln \left(\frac{1}{\sqrt{(2\pi)^{k} |\Sigma|}} \exp\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})\right)\right)$$
 
-$$\ln \left( \frac{1}{\sqrt{(2\pi)^k |\Sigma|}} \exp\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)
-\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
+$$-\ln \left( \frac{1}{\sqrt{(2\pi)^k |\Sigma|}} \exp\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
 
-$$\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})\right)
--$$
+$$\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})\right)-$$
 
-$$\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)
-+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
+$$\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
 
 A parti de aquí aplicamos las propiedades de simetría de $\Sigma$ y además con el desarrollo algebraico obtenemos: 
 
