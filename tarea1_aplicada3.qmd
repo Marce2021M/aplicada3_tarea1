@@ -35,7 +35,7 @@ donde tenemos que
 
 $$P(\mathbf{x}\in R_{2}|\mathbf{x}\in \Pi_{1})\pi_{1} = P(L(\mathbf{x})<0|\mathbf{x}\in\Pi_{1})$$
 
-donde aquí consideramos que $L(\mathbf{x})$ es la función discriminante de LDA, y $R_{2}$ es la región de decisión para la clase 2:
+Donde aquí consideramos que $L(\mathbf{x})$ es la función discriminante de LDA, $R_{2}$ es la región de decisión para la clase 2, y $\pi_{1}$ ,$\pi_{2}$ son las probabilidades a priori de las clases 1 y 2 respectivamente:
 
 $$L(\mathbf{x})=\ln\left(\frac{f_{1}(x)\pi_{1}}{f_{2}(x)\pi_{2}}\right)= \ln\left(\frac{f_{1}(x)}{f_{2}(x)}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)$$
 
@@ -56,6 +56,44 @@ $$\left(-\frac{1}{2} (\mathbf{x} - \mu_{1})^T \Sigma^{-1} (\mathbf{x} - \mu_{1})
 
 $$\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)
 + \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=$$
+
+A parti de aquí aplicamos las propiedades de simetría de $\Sigma$ y además con el desarrollo algebraico obtenemos: 
+
+$$L(\mathbf{x})=\left(-\frac{1}{2}\left(\mu_{1}^T \Sigma^{-1} \mu_{1}-\mu_{2}^T \Sigma^{-1} \mu_{2}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)\right)+$$
+
+$$\mu_{1}^T \Sigma^{-1}\mathbf{x}- \mu_{2}^T \Sigma^{-1}\mathbf{x}$$
+
+Con lo cual podemos reescribir la expresión como:
+
+$$L(\mathbf{x})= b_{0} + \mathbf{b}'\mathbf{x}$$
+
+donde 
+
+$$b_{0}=-\frac{1}{2}\left(\mu_{1}^T \Sigma^{-1} \mu_{1}-\mu_{2}^T \Sigma^{-1} \mu_{2}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)$$
+
+$$\mathbf{b}=\Sigma^{-1}(\mu_{1}-\mu_{2})$$
+
+Ahora volviendo a lo que nos concierne, considerando la probabilidad condicional, tendríamos la siguiente igualdad:
+
+$$P(L(\mathbf{x})<0|\mathbf{x}\in\Pi_{1})=P_{\Pi_{1}}(b_{0} + \mathbf{b}'\mathbf{x}<0)=$$
+
+Ahora estandarizamos la expresión:
+
+$$P_{\Pi_{1}}\left(\frac{\mathbf{b}'\mathbf{x}-\mathbf{b}'\mu_{1}}{\sqrt{(b'\Sigma b)}}<-\frac{(b_{0}+ \mathbf{b}'\mu_{1})}{\sqrt{b'\Sigma b}}\right)=\Phi\left(-\frac{(b_{0}+ \mathbf{b}'\mu_{1})}{\sqrt{b'\Sigma b}}\right)$$
+
+y análogamente para la otra probabilidad que tendríamos que calcular tendríamos:
+
+$$P(\mathbf{x}\in R_{1}|\mathbf{x}\in \Pi_{2})=\Phi\left(\frac{(b_{0}+ \mathbf{b}'\mu_{2})}{\sqrt{b'\Sigma b}}\right)$$
+
+
+Con lo cual la probabilidad de error de clasificación es el siguiente:
+
+$$P(\Delta)=\Phi\left(-\frac{(b_{0}+ \mathbf{b}'\mu_{1})}{\sqrt{b'\Sigma b}}\right)\pi_{1}+\Phi\left(\frac{(b_{0}+ \mathbf{b}'\mu_{2})}{\sqrt{b'\Sigma b}}\right)\pi_{2}$$
+
+y haciendo una mejor simplificación tendríamos:
+
+$$P(\Delta)=\Phi\left(-\frac{(b_{0}+ \mathbf{b}'\mu_{1})}{\sqrt{b'\Sigma b}}\right)\pi_{1}+\Phi\left(\frac{(b_{0}+ \mathbf{b}'\mu_{2})}{\sqrt{b'\Sigma b}}\right)\pi_{2}$$
+
 
 
 

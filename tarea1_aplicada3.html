@@ -2665,7 +2665,7 @@ vertical-align: -.125em;
 <p><span class="math display">\[P(\Delta)=P(\mathbf{x}\in R_{2}|\mathbf{x}\in \Pi_{1})\pi_{1}+P(\mathbf{x}\in R_{1}|\mathbf{x}\in \Pi_{2})\pi_{2}\]</span></p>
 <p>donde tenemos que</p>
 <p><span class="math display">\[P(\mathbf{x}\in R_{2}|\mathbf{x}\in \Pi_{1})\pi_{1} = P(L(\mathbf{x})&lt;0|\mathbf{x}\in\Pi_{1})\]</span></p>
-<p>donde aquí consideramos que <span class="math inline">\(L(\mathbf{x})\)</span> es la función discriminante de LDA, y <span class="math inline">\(R_{2}\)</span> es la región de decisión para la clase 2:</p>
+<p>Donde aquí consideramos que <span class="math inline">\(L(\mathbf{x})\)</span> es la función discriminante de LDA, <span class="math inline">\(R_{2}\)</span> es la región de decisión para la clase 2, y <span class="math inline">\(\pi_{1}\)</span> ,<span class="math inline">\(\pi_{2}\)</span> son las probabilidades a priori de las clases 1 y 2 respectivamente:</p>
 <p><span class="math display">\[L(\mathbf{x})=\ln\left(\frac{f_{1}(x)\pi_{1}}{f_{2}(x)\pi_{2}}\right)= \ln\left(\frac{f_{1}(x)}{f_{2}(x)}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)\]</span></p>
 <p>Con lo cual desarrollando (usando propiedades de logaritmo) obtenemos la siguiente expresión:</p>
 <p><span class="math display">\[L(\mathbf{x})=\ln(f_{1}(x))-\ln(f_{2}(x))+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=\]</span></p>
@@ -2678,6 +2678,24 @@ vertical-align: -.125em;
 -\]</span></p>
 <p><span class="math display">\[\left(-\frac{1}{2} (\mathbf{x} - \mu_{2})^T \Sigma^{-1} (\mathbf{x} - \mu_{2})\right)
 + \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)=\]</span></p>
+<p>A parti de aquí aplicamos las propiedades de simetría de <span class="math inline">\(\Sigma\)</span> y además con el desarrollo algebraico obtenemos:</p>
+<p><span class="math display">\[L(\mathbf{x})=\left(-\frac{1}{2}\left(\mu_{1}^T \Sigma^{-1} \mu_{1}-\mu_{2}^T \Sigma^{-1} \mu_{2}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)\right)+\]</span></p>
+<p><span class="math display">\[\mu_{1}^T \Sigma^{-1}\mathbf{x}- \mu_{2}^T \Sigma^{-1}\mathbf{x}\]</span></p>
+<p>Con lo cual podemos reescribir la expresión como:</p>
+<p><span class="math display">\[L(\mathbf{x})= b_{0} + \mathbf{b}&#39;\mathbf{x}\]</span></p>
+<p>donde</p>
+<p><span class="math display">\[b_{0}=-\frac{1}{2}\left(\mu_{1}^T \Sigma^{-1} \mu_{1}-\mu_{2}^T \Sigma^{-1} \mu_{2}\right)+ \ln\left(\frac{\pi_{1}}{\pi_{2}}\right)\]</span></p>
+<p><span class="math display">\[\mathbf{b}=\Sigma^{-1}(\mu_{1}-\mu_{2})\]</span></p>
+<p>Ahora volviendo a lo que nos concierne, considerando la probabilidad condicional, tendríamos la siguiente igualdad:</p>
+<p><span class="math display">\[P(L(\mathbf{x})&lt;0|\mathbf{x}\in\Pi_{1})=P_{\Pi_{1}}(b_{0} + \mathbf{b}&#39;\mathbf{x}&lt;0)=\]</span></p>
+<p>Ahora estandarizamos la expresión:</p>
+<p><span class="math display">\[P_{\Pi_{1}}\left(\frac{\mathbf{b}&#39;\mathbf{x}-\mathbf{b}&#39;\mu_{1}}{\sqrt{(b&#39;\Sigma b)}}&lt;-\frac{(b_{0}+ \mathbf{b}&#39;\mu_{1})}{\sqrt{b&#39;\Sigma b}}\right)=\Phi\left(-\frac{(b_{0}+ \mathbf{b}&#39;\mu_{1})}{\sqrt{b&#39;\Sigma b}}\right)\]</span></p>
+<p>y análogamente para la otra probabilidad que tendríamos que calcular tendríamos:</p>
+<p><span class="math display">\[P(\mathbf{x}\in R_{1}|\mathbf{x}\in \Pi_{2})=\Phi\left(\frac{(b_{0}+ \mathbf{b}&#39;\mu_{2})}{\sqrt{b&#39;\Sigma b}}\right)\]</span></p>
+<p>Con lo cual la probabilidad de error de clasificación es el siguiente:</p>
+<p><span class="math display">\[P(\Delta)=\Phi\left(-\frac{(b_{0}+ \mathbf{b}&#39;\mu_{1})}{\sqrt{b&#39;\Sigma b}}\right)\pi_{1}+\Phi\left(\frac{(b_{0}+ \mathbf{b}&#39;\mu_{2})}{\sqrt{b&#39;\Sigma b}}\right)\pi_{2}\]</span></p>
+<p>y haciendo una mejor simplificación tendríamos:</p>
+<p><span class="math display">\[P(\Delta)=\Phi\left(-\frac{(b_{0}+ \mathbf{b}&#39;\mu_{1})}{\sqrt{b&#39;\Sigma b}}\right)\pi_{1}+\Phi\left(\frac{(b_{0}+ \mathbf{b}&#39;\mu_{2})}{\sqrt{b&#39;\Sigma b}}\right)\pi_{2}\]</span></p>
 </section>
 <section id="implementar-lda-sobre-la-base-de-datos-mnist-y-usar-los-dígitos-1-y-3" class="level1">
 <h1>2.- Implementar LDA sobre la base de datos <code>MNIST</code> y usar los dígitos 1 y 3</h1>
