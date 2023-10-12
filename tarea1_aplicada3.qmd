@@ -89,6 +89,51 @@ qda_fit |>
 ```{r}
 # cv
 
+#data
+mnist_data <- read_mnist()
+
+tri <- train_images <- mnist_data$train$images
+train_labels<-mnist_data$train$labels
+tei <- test_images <- mnist_data$test$images
+test_labels <- mnist_data$test$labels
+
+tr_ind <- (train_labels == 1) | (train_labels==3)
+train_labels <- train_labels[tr_ind]
+tri <- tri[tr_ind,]
+
+train <- data.frame(label = (train_labels == 1),tri)
+train$label <- as.factor(train$label)
+# All operating systems
+library(doParallel)
+
+# Create a cluster object and then register: 
+cl <- makePSOCKcluster(6)
+registerDoParallel(cl)
+
+options <- control_resamples(verbose = TRUE)
+
+# Create glm specification model
+
+lr_spec <- logistic_reg() |>  
+  set_engine("glm") 
+
+lr_recipe <- recipe(label ~ ., 
+    data = train) 
+
+lr_workflow <- workflow(lr_recipe, lr_spec)
+
+# Create folds
+train_folds <- vfold_cv(train, v = 3, repeats = 5)
+# Fit the model
+system.time({
+lr_fit_cv <- lr_workflow |> 
+  fit_resamples(train_folds, control = options)
+})
+
+collect_metrics(lr_fit_cv)
+
+
+
 ```
 
 ```{r, error=TRUE}
