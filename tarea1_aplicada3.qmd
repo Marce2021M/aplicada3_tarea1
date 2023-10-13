@@ -185,6 +185,58 @@ augment(qda_fit, new_data = data2) |>
 qda_fit |>
   pluck("fit")
 ```
+4. **Problema 8.3 Izenman**
+
+Tenemos $X_1 \sim N_r(μ_1, Σ_{XX}), X_2 \sim N_r(μ_2, Σ_{XX})$ independientes, y tenemos el siguiente estadístico:
+
+$$
+G(a) =\frac{\{\mathbb{E}[a^TX_1] - \mathbb{E}[a^TX_2]\}^2}{Var(a^TX_1-a^TX_2)}
+$$
+
+Ahora, si consideramos $X_1 - X_2 \sim N_r(\mu_1-\mu_2, 2\Sigma_{XX}) =: N_r(\mu_Y,\Sigma_{YY})$, entonces:
+
+$$
+\max_{a \in \mathbb{R}^r} \frac{(a^T\mu_Y)^2}{a^T\Sigma_{YY}a}, \\ 
+s.a. ~~~a^T\Sigma_{YY}a=1
+$$
+
+Para esto, empezamos derivando el multiplicador:
+
+$$
+F(a) = G(a)-a^T\Sigma_{YY}a
+$$
+$$
+\implies \frac{\partial F(a)}{\partial a} = \frac{2a^T\mu_Y\mu_Y^T(a^T\Sigma_{YY}a)-2(a^T\mu_Y)^2a^T\Sigma_{YY}}{(a^T\Sigma_{YY}a)^2} - 2\lambda a^T\Sigma_{YY} =0
+$$
+$$
+\implies 2a^T\mu_Y\mu_Y^T(a^T\Sigma_{YY}a)= 2\lambda a^T\Sigma_{YY}(a^T\Sigma_{YY}a)^2-2(a^T\mu_Y)^2a^T\Sigma_{YY}
+$$
+$$
+\implies a^T\mu_Y\mu_Y^T=\lambda a^T\Sigma_{YY}-(a^T\mu_Y)^2a^T\Sigma_{YY} = (\lambda-(a^T\mu_Y)^2)a^T\Sigma_{YY}
+$$
+$$
+\implies a^T((\lambda-(a^T\mu_Y)^2)\Sigma_{YY}-\mu_Y\mu_Y^T)=0
+$$
+Ahora, recordemos que una expresión equivalente a $F(a)$ es:
+$$
+F(a) = (a^T\mu_Y)^2-\lambda a^T\Sigma_{YY}a
+$$
+$$
+\implies \partial_aF(a)=2(\mu_Y\mu_Y^T-\lambda\Sigma_{YY})a=0
+$$
+$$
+\implies (\mu_Y\mu_Y^T-\lambda\Sigma_{YY})a=0
+\\
+\implies a(\mu_Y\mu_Y^T-\lambda\Sigma_{YY})a=0
+\\
+\implies (a^T\mu_Y)^2=\lambda
+$$
+$$
+\therefore \sqrt{\lambda}\mu_Y-\lambda\Sigma_{YY}a=0
+\\
+\therefore a=\frac{1}{\sqrt{\lambda}}\Sigma_{YY}^{-1}\mu_Y~~ \alpha~~\Sigma_{XX}^{-1}(\mu_1-\mu_2)
+$$
+Con esto, concluímos el problema.
 
 # 5.- Problema de clasificación
 
