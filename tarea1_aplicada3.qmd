@@ -431,7 +431,7 @@ cereal_data <- data.frame(
   Vitamin_A_pct_daily_allowance = c(0, 25, 25, 25, 25, 25, 100, 25, 100, 0, 25, 25)
 )
 
-kable(cereal_data, "html", booktabs = TRUE) %>%
+kable(cereal_data, "latex", booktabs = TRUE) %>%
   kable_styling()
 
 
@@ -443,7 +443,7 @@ kable(cereal_data, "html", booktabs = TRUE) %>%
 # Compute the distance matrix
 dist_matrix <- dist(cereal_data[1:12,2:6])
 
-kable(as.matrix(dist_matrix),"html",booktabs=TRUE) %>% kable_styling()
+kable(as.matrix(dist_matrix),"latex",booktabs=TRUE) %>% kable_styling()
 ```
 
 (b) Treating the distances calculated in (a) as measures of dissimilarity, use single-linkage, complete-linkage, and average-linkage clustering to cluster the cereal brands. Construct a dendrogram for each method.
@@ -469,7 +469,7 @@ clusters <- kmeans(clustering_data, centers=2, nstart=20)
 # Add cluster results to the original data
 cereal_data$cluster <- as.factor(clusters$cluster)
 
-kable(cereal_data, "html", booktabs = TRUE) %>%
+kable(cereal_data, "latex", booktabs = TRUE) %>%
 kable_styling()
 ```
 
@@ -481,7 +481,7 @@ clusters <- kmeans(clustering_data, centers=3, nstart=20)
 cereal_data$cluster <- as.factor(clusters$cluster)
 
 # Print the dataframe with clusters
-kable(cereal_data, "html", booktabs = TRUE) %>%
+kable(cereal_data, "latex", booktabs = TRUE) %>%
 kable_styling()
 ```
 
@@ -493,7 +493,7 @@ clusters <- kmeans(clustering_data, centers=4, nstart=20)
 cereal_data$cluster <- as.factor(clusters$cluster)
 
 # Print the dataframe with clusters
-kable(cereal_data, "html", booktabs = TRUE) %>%
+kable(cereal_data, "latex", booktabs = TRUE) %>%
 kable_styling()
 ```
 
