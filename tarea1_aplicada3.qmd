@@ -420,6 +420,7 @@ De estas imágenes podemos determinar, junto con el conocimiento previo de que h
 The following table lists measurements on 5 nutritional variables for 12 breakfast cereals.
 
 ```{r, message=FALSE, warning=FALSE}
+library(kableExtra)
 cereal_data <- data.frame(
   Cereal = c("Life", "Grape Nuts", "Super Sugar Crisp", "Special K", "Rice Krispies", "Raisin Bran", 
              "Product 19", "Wheaties", "Total", "Puffed Rice", "Sugar Corn Pops", "Sugar Smacks"),
@@ -430,7 +431,10 @@ cereal_data <- data.frame(
   Vitamin_A_pct_daily_allowance = c(0, 25, 25, 25, 25, 25, 100, 25, 100, 0, 25, 25)
 )
 
-cereal_data
+kable(cereal_data, "html", booktabs = TRUE) %>%
+  kable_styling()
+
+
 ```
 
 (a) Using tha data in the table, calculate the euclidean distances between each pair of cereal brands.
@@ -439,7 +443,7 @@ cereal_data
 # Compute the distance matrix
 dist_matrix <- dist(cereal_data[1:12,2:6])
 
-dist_matrix
+kable(as.matrix(dist_matrix),"html",booktabs=TRUE) %>% kable_styling()
 ```
 
 (b) Treating the distances calculated in (a) as measures of dissimilarity, use single-linkage, complete-linkage, and average-linkage clustering to cluster the cereal brands. Construct a dendrogram for each method.
@@ -449,7 +453,7 @@ clusterFunc(dist_matrix,method ="single" )
 clusterFunc(dist_matrix,method ="average" )
 clusterFunc(dist_matrix,method ="complete" )
 ```
-
+De estas imágenes podemos determinar de que hay casi **tres** tipos de cereales. Y en los 3 métodos los dendogramas se parecen muchísimo. Con lo cual es mucho más fácil concordar en los distintos clusters que se pueden hacer a diferencia del anterior.
 
 # 10.- Input the data in the previous table into k-means clustering program. Use the program to cluster the cereal brands into 2, 3, and 4 clusters. Compare the results with those obtained in the previous problem.
 
@@ -460,13 +464,13 @@ clustering_data <- cereal_data[,-1]
 
 # Choose the optimal number of clusters (for demonstration, let's say 3)
 set.seed(123)  # Set seed for reproducibility
-clusters <- kmeans(clustering_data, centers=2)
+clusters <- kmeans(clustering_data, centers=2, nstart=20)
 
 # Add cluster results to the original data
 cereal_data$cluster <- as.factor(clusters$cluster)
 
-# Print the dataframe with clusters
-print(cereal_data)
+kable(cereal_data, "html", booktabs = TRUE) %>%
+kable_styling()
 ```
 
 ## Utilizamos K=3
@@ -477,7 +481,8 @@ clusters <- kmeans(clustering_data, centers=3)
 cereal_data$cluster <- as.factor(clusters$cluster)
 
 # Print the dataframe with clusters
-print(cereal_data)
+kable(cereal_data, "html", booktabs = TRUE) %>%
+kable_styling()
 ```
 
 ## Utilizamos K=4
@@ -488,8 +493,9 @@ clusters <- kmeans(clustering_data, centers=4)
 cereal_data$cluster <- as.factor(clusters$cluster)
 
 # Print the dataframe with clusters
-print(cereal_data)
+kable(cereal_data, "html", booktabs = TRUE) %>%
+kable_styling()
 ```
 
-**Poner interpretación**
+
 
