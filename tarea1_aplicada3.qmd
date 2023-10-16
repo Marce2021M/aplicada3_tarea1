@@ -475,7 +475,7 @@ kable_styling()
 
 ## Utilizamos K=3
 ```{r}
-clusters <- kmeans(clustering_data, centers=3)
+clusters <- kmeans(clustering_data, centers=3, nstart=20)
 
 # Add cluster results to the original data
 cereal_data$cluster <- as.factor(clusters$cluster)
@@ -487,7 +487,7 @@ kable_styling()
 
 ## Utilizamos K=4
 ```{r}
-clusters <- kmeans(clustering_data, centers=4)
+clusters <- kmeans(clustering_data, centers=4, nstart=20)
 
 # Add cluster results to the original data
 cereal_data$cluster <- as.factor(clusters$cluster)
@@ -497,5 +497,5 @@ kable(cereal_data, "html", booktabs = TRUE) %>%
 kable_styling()
 ```
 
-
+Notamos que los clusters que se van formando en k-means son los mismos que se formarían si nos vamos desplazando continuamente en la altura a la cual decidimos cortar de cualquiera de los dendogramas. Por lo tanto se llegan a las mismas conclusiones que utilizando los dendogramas y en este caso serían equivalentes.
 

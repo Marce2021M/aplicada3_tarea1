@@ -4220,7 +4220,7 @@ divisive_model &lt;- agnes(dist_mat, method = &quot;single&quot;)</code></pre>
 <section id="utilizamos-k3" class="level2">
 <h2 class="anchored" data-anchor-id="utilizamos-k3">Utilizamos K=3</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(clustering_data, <span class="at">centers=</span><span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(clustering_data, <span class="at">centers=</span><span class="dv">3</span>, <span class="at">nstart=</span><span class="dv">20</span>)</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Add cluster results to the original data</span></span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>cereal_data<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(clusters<span class="sc">$</span>cluster)</span>
@@ -4360,7 +4360,7 @@ divisive_model &lt;- agnes(dist_mat, method = &quot;single&quot;)</code></pre>
 <section id="utilizamos-k4" class="level2">
 <h2 class="anchored" data-anchor-id="utilizamos-k4">Utilizamos K=4</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(clustering_data, <span class="at">centers=</span><span class="dv">4</span>)</span>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(clustering_data, <span class="at">centers=</span><span class="dv">4</span>, <span class="at">nstart=</span><span class="dv">20</span>)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Add cluster results to the original data</span></span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>cereal_data<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(clusters<span class="sc">$</span>cluster)</span>
@@ -4443,7 +4443,7 @@ divisive_model &lt;- agnes(dist_mat, method = &quot;single&quot;)</code></pre>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">110</td>
 <td style="text-align: right;">100</td>
-<td style="text-align: left;">2</td>
+<td style="text-align: left;">1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Wheaties</td>
@@ -4461,7 +4461,7 @@ divisive_model &lt;- agnes(dist_mat, method = &quot;single&quot;)</code></pre>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">110</td>
 <td style="text-align: right;">100</td>
-<td style="text-align: left;">2</td>
+<td style="text-align: left;">1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Puffed Rice</td>
@@ -4470,7 +4470,7 @@ divisive_model &lt;- agnes(dist_mat, method = &quot;single&quot;)</code></pre>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">50</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">1</td>
+<td style="text-align: left;">2</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Sugar Corn Pops</td>
@@ -4496,6 +4496,7 @@ divisive_model &lt;- agnes(dist_mat, method = &quot;single&quot;)</code></pre>
 
 </div>
 </div>
+<p>Notamos que los clusters que se van formando en k-means son los mismos que se formarían si nos vamos desplazando continuamente en la altura a la cual decidimos cortar de cualquiera de los dendogramas. Por lo tanto se llegan a las mismas conclusiones que utilizando los dendogramas y en este caso serían equivalentes.</p>
 </section>
 </section>
 
