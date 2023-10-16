@@ -1,14 +1,24 @@
 ---
 title: "Estadística Aplicada 3 - Tarea 1"
 lang: es
-author: "Marcelino"
+author: 
+  -Marcelino
+  -David
 date: today
+header-includes:
+  - \usepackage{listings}
+  - \usepackage{color} % si aún no lo has incluido; es necesario para \textcolor
+  - \lstset{breaklines=true, postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}}
+
 format:
   html:
     page-layout: full
     embed-resources: true
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment=NA, tidy.opts=list(width.cutoff=40))
+```
 
 ```{r, message=FALSE, warning=FALSE}
 #Cargamos paquetes
@@ -23,6 +33,8 @@ library(tidyr)
 # Cargamos bases de datos
 data2 <- iris
 ```
+
+
 
 # 1.- Derive la probabilidad de mala clasificación para LDA
 
@@ -93,7 +105,7 @@ La implementación en R fue usando la librería de ```MASS``` para el método de
 
 Se inicializan los datos de la siguiente forma:
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
 mnist_data <- read_mnist()
 ```
 
@@ -101,7 +113,7 @@ Los datos ya vienen divididos en variables ```train``` y ```test```, las que a s
 
 Ahora, los datos de imágenes 28x28 vienen en forma de vectores de 784 entradas, con valores del 0 al 255 representando la gamma del gris. Debido a su fuerte correlación entre pixeles adyacentes, es importante reducir la colinearidad al tomar en vez un estadístico de los pixeles que nos ayude todavía a diferenciarlos. Para esto, decidimos tomar el promedio de los renglones de la imagen para determinar cuánto está dibujado de negro cada fila en la imagen; un dato que debe ayudarnos en general a distinguir 1s de 3s.
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
 #Extraer el train y test
 tri <- train_images <- mnist_data$train$images
 train_labels<-mnist_data$train$labels
@@ -125,7 +137,7 @@ tei_promr <- rowMeans(tei2, dims = 2)
 
 Una vez hecho eso, ahora aplicamos el algoritmo de LDA para crear el predictor, construyendo la matriz (Y,X) para insertar al modelo.
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
 train <- data.frame(label = (train_labels == 1),tri_promr)
 
 model <- lda(label~.,data=train)
@@ -354,21 +366,24 @@ dist_matrix <- dist(data)
 
 Ahora procedemos a crear el programa ayudado con un paquete de R que ya lo calcula con la función de ```hclust``` del paquete ```stats```. Y programamos para que directamente grafique los dendogramas.
 
-```{r}
+```{r, break.lines = TRUE}
 
 clusterFunc <- function(dist_matrix,method ="single" ){
   if(method=="single"){
     # Single-linkage
     single_linkage <- hclust(dist_matrix, method="single")
-    plot(single_linkage, main="Single-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
+    plot(single_linkage, main="Single-linkage Hierarchical Clustering",
+     sub="", xlab="", ylab="Height")
   } else if(method=="average"){
     # Average-linkage
     average_linkage <- hclust(dist_matrix, method="average")
-    plot(average_linkage, main="Average-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
+    plot(average_linkage, main="Average-linkage Hierarchical Clustering", 
+    sub="", xlab="", ylab="Height")
   } else{
     # Complete-linkage
     complete_linkage <- hclust(dist_matrix, method="complete")
-    plot(complete_linkage, main="Complete-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
+    plot(complete_linkage, main="Complete-linkage Hierarchical Clustering", 
+    sub="", xlab="", ylab="Height")
   }
 }
 ```
@@ -422,8 +437,10 @@ The following table lists measurements on 5 nutritional variables for 12 breakfa
 ```{r, message=FALSE, warning=FALSE}
 library(kableExtra)
 cereal_data <- data.frame(
-  Cereal = c("Life", "Grape Nuts", "Super Sugar Crisp", "Special K", "Rice Krispies", "Raisin Bran", 
-             "Product 19", "Wheaties", "Total", "Puffed Rice", "Sugar Corn Pops", "Sugar Smacks"),
+  Cereal = c("Life", "Grape Nuts", "Super Sugar Crisp", "Special K", 
+  "Rice Krispies", "Raisin Bran", 
+  "Product 19", "Wheaties", "Total", "Puffed Rice", 
+  "Sugar Corn Pops", "Sugar Smacks"),
   Protein_gm = c(6, 3, 2, 6, 2, 3, 2, 3, 3, 1, 1, 2),
   Carbohydrates_gm = c(19, 23, 26, 21, 25, 28, 24, 23, 23, 13, 26, 25),
   Fat_gm = c(1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0),
@@ -432,7 +449,7 @@ cereal_data <- data.frame(
 )
 
 kable(cereal_data, "latex", booktabs = TRUE) %>%
-  kable_styling()
+  kable_styling(latex_options = c("scale_down", "H"))
 
 
 ```
@@ -443,7 +460,8 @@ kable(cereal_data, "latex", booktabs = TRUE) %>%
 # Compute the distance matrix
 dist_matrix <- dist(cereal_data[1:12,2:6])
 
-kable(as.matrix(dist_matrix),"latex",booktabs=TRUE) %>% kable_styling()
+kable(as.matrix(dist_matrix),"latex",booktabs=TRUE) %>% 
+kable_styling(latex_options = c("scale_down", "H"))
 ```
 
 (b) Treating the distances calculated in (a) as measures of dissimilarity, use single-linkage, complete-linkage, and average-linkage clustering to cluster the cereal brands. Construct a dendrogram for each method.
@@ -470,7 +488,7 @@ clusters <- kmeans(clustering_data, centers=2, nstart=20)
 cereal_data$cluster <- as.factor(clusters$cluster)
 
 kable(cereal_data, "latex", booktabs = TRUE) %>%
-kable_styling()
+kable_styling(latex_options = c("scale_down", "H"))
 ```
 
 ## Utilizamos K=3
@@ -482,7 +500,7 @@ cereal_data$cluster <- as.factor(clusters$cluster)
 
 # Print the dataframe with clusters
 kable(cereal_data, "latex", booktabs = TRUE) %>%
-kable_styling()
+kable_styling(latex_options = c("scale_down", "H"))
 ```
 
 ## Utilizamos K=4
@@ -494,7 +512,7 @@ cereal_data$cluster <- as.factor(clusters$cluster)
 
 # Print the dataframe with clusters
 kable(cereal_data, "latex", booktabs = TRUE) %>%
-kable_styling()
+kable_styling(latex_options = c("scale_down", "H"))
 ```
 
 Notamos que los clusters que se van formando en k-means son los mismos que se formarían si nos vamos desplazando continuamente en la altura a la cual decidimos cortar de cualquiera de los dendogramas. Por lo tanto se llegan a las mismas conclusiones que utilizando los dendogramas y en este caso serían equivalentes.
