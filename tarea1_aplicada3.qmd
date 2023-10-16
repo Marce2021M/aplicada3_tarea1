@@ -14,10 +14,9 @@ format:
 #Cargamos paquetes
 library(tidymodels)
 library(discrim)
-
 library(corrr)
 library(paletteer)
-
+library(MASS)
 library(dslabs)
 library(tidyr)
 
@@ -86,9 +85,7 @@ Con lo cual la probabilidad de error de clasificación es el siguiente:
 
 $$P(\Delta)=\Phi\left(-\frac{(b_{0}+ \mathbf{b}'\mu_{1})}{\sqrt{b'\Sigma b}}\right)\pi_{1}+\Phi\left(\frac{(b_{0}+ \mathbf{b}'\mu_{2})}{\sqrt{b'\Sigma b}}\right)\pi_{2}$$
 
-y haciendo una mejor simplificación tendríamos:
 
-$$P(\Delta)=\Phi\left(-\frac{(b_{0}+ \mathbf{b}'\mu_{1})}{\sqrt{b'\Sigma b}}\right)\pi_{1}+\Phi\left(\frac{(b_{0}+ \mathbf{b}'\mu_{2})}{\sqrt{b'\Sigma b}}\right)\pi_{2}$$
 
 2. **Implementar LDA sobre la base de datos ```MNIST``` y usar los dígitos 1 y 3**
 
@@ -185,39 +182,24 @@ augment(qda_fit, new_data = data2) |>
 qda_fit |>
   pluck("fit")
 ```
+
 4. **Problema 8.3 Izenman**
 
 Tenemos $X_1 \sim N_r(μ_1, Σ_{XX}), X_2 \sim N_r(μ_2, Σ_{XX})$ independientes, y tenemos el siguiente estadístico:
 
 $$
-G(a) =\frac{\{\mathbb{E}[a^TX_1] - \mathbb{E}[a^TX_2]\}^2}{Var(a^TX_1-a^TX_2)}
+\frac{\{\mathbb{E}[a^TX_1] - \mathbb{E}[a^TX_2]\}^2}{Var(a^TX_1-a^TX_2)}
 $$
 
-Ahora, si consideramos $X_1 - X_2 \sim N_r(\mu_1-\mu_2, 2\Sigma_{XX}) =: N_r(\mu_Y,\Sigma_{YY})$, entonces:
+Ahora, si consideramos $X_1 - X_2 \sim N_r(\mu_1-\mu_2, 2\Sigma_{XX}) =: N_r(\mu_Y,\Sigma_{YY})$. Además, tomando en cuenta la norma definida por una matriz. Por lo tanto tenemos 
 
 $$
-\max_{a \in \mathbb{R}^r} \frac{(a^T\mu_Y)^2}{a^T\Sigma_{YY}a}, \\ 
+\max_{a \in \mathbb{R}^r}G(a)= (a^T\mu_Y)^2, \\ 
 s.a. ~~~a^T\Sigma_{YY}a=1
 $$
 
 Para esto, empezamos derivando el multiplicador:
 
-$$
-F(a) = G(a)-a^T\Sigma_{YY}a
-$$
-$$
-\implies \frac{\partial F(a)}{\partial a} = \frac{2a^T\mu_Y\mu_Y^T(a^T\Sigma_{YY}a)-2(a^T\mu_Y)^2a^T\Sigma_{YY}}{(a^T\Sigma_{YY}a)^2} - 2\lambda a^T\Sigma_{YY} =0
-$$
-$$
-\implies 2a^T\mu_Y\mu_Y^T(a^T\Sigma_{YY}a)= 2\lambda a^T\Sigma_{YY}(a^T\Sigma_{YY}a)^2-2(a^T\mu_Y)^2a^T\Sigma_{YY}
-$$
-$$
-\implies a^T\mu_Y\mu_Y^T=\lambda a^T\Sigma_{YY}-(a^T\mu_Y)^2a^T\Sigma_{YY} = (\lambda-(a^T\mu_Y)^2)a^T\Sigma_{YY}
-$$
-$$
-\implies a^T((\lambda-(a^T\mu_Y)^2)\Sigma_{YY}-\mu_Y\mu_Y^T)=0
-$$
-Ahora, recordemos que una expresión equivalente a $F(a)$ es:
 $$
 F(a) = (a^T\mu_Y)^2-\lambda a^T\Sigma_{YY}a
 $$
@@ -250,6 +232,27 @@ In addition, it is knoe that about 20% of all possible items (for which the meas
 
 (b) Measurements recorded on a new item yield the densitiy values $f_{1}(x)=.3$ and $f_{2}(x)=.5$. Given the preceding information, assign this item to populatio $\pi_{1}$ or $\pi_{2}$
 
+Para el primer inciso, tenemos la regla mínima del ECM:
+
+$$
+R_1: \frac{f_1(x)}{f_2(x)}\geq\frac{\pi_2}{\pi_1}\frac{c(1|2)}{c(2|1)};~~~
+R_2: \frac{f_1(x)}{f_2(x)}<\frac{\pi_2}{\pi_1}\frac{c(1|2)}{c(2|1)}
+$$
+
+El problema ya nos dice que $\pi_2$=0.2, al igual que nos da los valores de $c(1,2)=100$ y $c(2,1)=50$, por lo cual reescribimos:
+
+$$
+R_1: \frac{f_1(x)}{f_2(x)}\geq0.5;~~~
+R_2: \frac{f_1(x)}{f_2(x)}<0.5
+$$
+
+Para el segundo inciso, tenemos $f_1(x)=.3$ y $f_2(x)=.5$. Podemos estimar por tanto la regla mínima:
+
+$$
+\frac{f_1(x)}{f_2(x)}=0.6 \geq 0.5
+$$
+
+Con esto podemos concluir que el nuestro objeto **tiene que clasificarse en $\Pi_1$.**
 
 # 6.- Problema de QDA
 
@@ -267,9 +270,47 @@ If $\Sigma_{1}=\Sigma_{2}=\Sigma$ for instance, verify that $Q$ becomes
 
 $$(\mu_{1}-\mu_{2})'\Sigma^{-1}x-\frac{1}{2}(\mu_{1}-\mu_{2})'\Sigma^{-1}(\mu_{1}+\mu_{2})$$
 
+Tenemos que las densidades para una variable normal $r$-variada se describe como:
+
+$$
+f(x)=\frac{1}{(2\pi)^{r/2}|\Sigma|^{1/2}}e^{-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)}
+$$
+
+Por tanto, eso nos da:
+
+$$
+Q=\ln\left(\frac{\frac{1}{(2\pi)^{r/2}|\Sigma_1|^{1/2}}e^{-\frac{1}{2}(x-\mu_1)^T\Sigma_1^{-1}(x-\mu_1)}}{\frac{1}{(2\pi)^{r/2}|\Sigma_2|^{1/2}}e^{-\frac{1}{2}(x-\mu_2)^T\Sigma_2^{-1}(x-\mu_2)}}\right)
+$$
+$$
+=\ln\left(\frac{|\Sigma_2|^{1/2}}{|\Sigma_1|^{1/2}}e^{\frac{1}{2}(x-\mu_2)^T\Sigma_2^{-1}(x-\mu_2)-\frac{1}{2}(x-\mu_1)^T\Sigma_1^{-1}(x-\mu_1)}\right)
+$$
+$$
+=\ln\left(\frac{|\Sigma_2|^{1/2}}{|\Sigma_1|^{1/2}}\right)+\frac{1}{2}\left\{(x-\mu_2)^T\Sigma_2^{-1}(x-\mu_2)-(x-\mu_1)^T\Sigma_1^{-1}(x-\mu_1)\right\}
+$$
+
+Ahora, bajo el supuesto que $\Sigma_{1}=\Sigma_{2}=\Sigma$, obtenemos:
+
+$$
+=\ln\left(\frac{|\Sigma|^{1/2}}{|\Sigma|^{1/2}}\right)+\frac{1}{2}\left\{(x-\mu_2)^T\Sigma^{-1}(x-\mu_2)-(x-\mu_1)^T\Sigma^{-1}(x-\mu_1)\right\}
+$$
+$$
+=\ln(1)+\frac{1}{2}\left\{x^T\Sigma^{-1}x-\mu_2^T\Sigma^{-1}x-x^T\Sigma^{-1}\mu_2+\mu_2^T\Sigma^{-1}\mu_2\right\}
+$$
+$$
+-\frac{1}{2}\left\{x^T\Sigma^{-1}x-\mu_1^T\Sigma^{-1}x-x^T\Sigma^{-1}\mu_1+\mu_1^T\Sigma^{-1}\mu_1\right\}
+$$
+$$
+=\frac{1}{2}\left\{ (\mu_1-\mu_2)^T\Sigma^{-1}x + x^T\Sigma^{-1}(\mu_1-\mu_2) - (\mu_1-\mu_2)^T\Sigma^{-1}(\mu_1+\mu_2)\right\}
+$$
+$$
+=(\mu_1-\mu_2)^T\Sigma^{-1}x - \frac{1}{2}(\mu_1-\mu_2)^T\Sigma^{-1}(\mu_1+\mu_2)
+$$
+
+Con esto, concluímos el problema.
 
 # 7.- Write a coputer program to implement single-linkage, average-linkage, and complete-linkage agglomerative hierarchical clustering. Try it out on a data set of your choice.
 
+Creamos una base de datos aleatoria primero y después contruimos la matriz de disimalaridad con la distancia euclidiana.
 ```{r, error=TRUE}
 
 # Sample data
@@ -281,6 +322,12 @@ colnames(data) <- c("X", "Y")
 plot(data, pch=19, col="blue", xlab="X", ylab="Y", main="Sample Data Points")
 
 dist_matrix <- dist(data)
+
+```
+
+Ahora procedemos a crear el programa ayudado con un paquete de R que ya lo calcula con la función de ```hclust``` del paquete ```stats```. Y programamos para que directamente grafique los dendogramas.
+
+```{r}
 
 clusterFunc <- function(dist_matrix,method ="single" ){
   if(method=="single"){
@@ -297,6 +344,11 @@ clusterFunc <- function(dist_matrix,method ="single" ){
     plot(complete_linkage, main="Complete-linkage Hierarchical Clustering", sub="", xlab="", ylab="Height")
   }
 }
+```
+
+Y procedemos a probarlo
+
+```{r}
 
 clusterFunc(dist_matrix,method ="single" )
 clusterFunc(dist_matrix,method ="average" )
