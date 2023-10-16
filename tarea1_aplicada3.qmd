@@ -157,31 +157,58 @@ Eso nos da una precisión del 88.99%, bastante alto para un predictor lineal de 
 
 # 3.- Implementar QDA sobre los datos de ```iris``` (raw data)
 
+Vamos a implementar QDA en los datos de ```iris``` utilizando datos de entrenamiento y testeo dado que no queremos causar un sobreajuste en los datos. 
+
+Utilizaremos el 75% de los datos para entranamiento y la semilla 1087.
 
 ```{r, error=TRUE}
+
+set.seed(1087)
+data_split <- rsample::initial_split(data2, prop = .75)
+data_train <- training(data_split)
+data_test <- testing(data_split)
+
 qda_spec <- discrim_quad() |>
   set_mode("classification") |>
   set_engine("MASS")
 
 qda_fit <- qda_spec |>
-  fit(Species ~ ., data = data2) #modificar
+  fit(Species ~ ., data = data_train) 
 
-augment(qda_fit, new_data = data2) |>
+```
+
+Ahora calcularemos métricas para saber qué tan bien estuvo nuestro ajuste.
+
+```{r}
+
+augment(qda_fit, new_data = data_test) |>
   conf_mat(truth = Species, estimate = .pred_class) |>
   autoplot(type = "heatmap")
 
-augment(qda_fit, new_data = data2) |>
+augment(qda_fit, new_data = data_test) |>
   accuracy(truth = Species, estimate = .pred_class)
 
-augment(qda_fit, new_data = data2) |>
+augment(qda_fit, new_data = data_test) |>
   recall(truth = Species, estimate = .pred_class)
 
-augment(qda_fit, new_data = data2) |>
+augment(qda_fit, new_data = data_test) |>
   precision(truth = Species, estimate = .pred_class)
 
-qda_fit |>
-  pluck("fit")
 ```
+
+
+Con lo cual notamos que tuvimos un muy buen ajuste, dado que entre más cercano a uno, las métricas nos dicen que nuestro ajuste será muy bueno para predecir nuevos datos.
+
+Por último veremos las estadísticas de nuestro ajuste
+
+```{r}
+
+qda_fit$fit
+```
+
+Con lo cual notamos que en un principio habían casi la misma proporción de especies en la base de datos.
+
+
 
 4. **Problema 8.3 Izenman**
 
@@ -358,10 +385,33 @@ clusterFunc(dist_matrix,method ="complete" )
 
 # 8.- Implemente SL, AL y CL sobre la base de datos ```iris``` (raw data)
 
-```{r}
+Primero inicializamos ```iris``` y agarramos los datos numéricos de su base de datos
+```
+library(cluster)
 
+#Iris DB
+data <- as.matrix(iris[,1:4])
+dist_mat <- dist(data, method = 'euclidean')
+```
+Luego, usamos clustering aglomerativo usando ```hclust``` y clustering divisivo usando ```agnes```, con ello corremos lo siguiente:
 
 ```
+hclust_single <- hclust(dist_mat, method = 'single')
+hclust_average <- hclust(dist_mat, method='average')
+hclust_complete <- hclust(dist_mat, method= 'complete')
+divisive_model <- agnes(dist_mat, method = "single")
+```
+Los plots resultantes son los siguientes:
+
+![Single Linkage Agglomerative Cluster](SL.png) Single Linkage Agglomerative Cluster
+
+![Average Linkage Agglomerative Cluster](AL.png) Average Linkage Agglomerative Cluster
+
+![Complete Linkage Agglomerative Cluster](CL.png) Complete Linkage Agglomerative Cluster
+
+![Divisive Cluster](Divisive.png) Divisive Cluster
+
+De estas imágenes podemos determinar, junto con el conocimiento previo de que hay **tres** tipos de plantas, que el Complete Linkage Cluster es el que mejor nos permite diferenciar los tipos de planta que tiene la base de datos al hacer un corte horizontal a altura 3.5, mientras que los demás algoritmos tienen problema diferenciando los tipos de especies al tomar diferencias mínimas o promedio de medidas en sépalo y pétalo. Por tanto, **es más fácil diferenciar las especies de plantas por el tamaño máximo de sépalo y pétalo de las plantas, haciendo el Complete Linkage el más efectivo.**
 
 
 
