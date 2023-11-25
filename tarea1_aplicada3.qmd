@@ -347,7 +347,7 @@ $$
 
 Con esto, concluímos el problema.
 
-# 7.- Write a coputer program to implement single-linkage, average-linkage, and complete-linkage agglomerative hierarchical clustering. Try it out on a data set of your choice.
+# 7.- Write a computer program to implement single-linkage, average-linkage, and complete-linkage agglomerative hierarchical clustering. Try it out on a data set of your choice.
 
 Creamos una base de datos aleatoria primero y después contruimos la matriz de disimalaridad con la distancia euclidiana.
 ```{r, error=TRUE}
